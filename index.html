@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BM7 — عالم الأبطال</title>
+<style>
+:root{--bg:#050709;--panel:#0b0f13;--line:#202830;--gold:#ffc400;--text:#f5f5f5;--muted:#9ba4ad}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#17212b,#050709 45%);color:var(--text);font-family:Arial,Tahoma,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:220px 1fr 280px;gap:12px;padding:12px;max-width:1500px;margin:auto}
+.side,.right,.card,.hero,.creator{background:linear-gradient(180deg,#0d1318,#080c10);border:1px solid var(--line);border-radius:14px}
+.side{padding:18px;position:sticky;top:12px;height:calc(100vh - 24px)}.logo{font-size:25px;font-weight:900;margin-bottom:25px}.logo b{color:var(--gold)}
+.nav button{width:100%;background:none;border:0;color:#ddd;text-align:right;padding:13px;border-radius:9px;margin:2px 0}.nav button:hover,.nav .active{background:#211d0a;color:var(--gold)}
+.profile-mini{position:absolute;bottom:18px;right:18px;left:18px;border-top:1px solid var(--line);padding-top:16px}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#171e26;border:2px solid var(--gold);font-size:20px}
+.top{display:flex;gap:10px;margin-bottom:12px}.search{flex:1;background:#0b1015;border:1px solid var(--line);border-radius:10px;padding:12px;color:white}.btn{border:1px solid #343d46;background:#111820;color:white;padding:11px 18px;border-radius:9px}.btn.gold{background:var(--gold);color:#080a0c;border-color:var(--gold);font-weight:bold}
+.hero{min-height:285px;padding:35px;display:flex;align-items:center;overflow:hidden;background:linear-gradient(90deg,rgba(4,7,10,.98),rgba(4,7,10,.55)),radial-gradient(circle at 70% 40%,#283746,#070a0d)}.hero h1{font-size:48px;margin:8px 0;color:var(--gold)}.hero p{max-width:620px;color:#d4d9de;font-size:17px;line-height:1.8}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-top:12px}.tabs button{background:none;border:0;color:var(--muted);padding:14px}.tabs .sel{color:var(--gold);border-bottom:2px solid var(--gold)}
+.card{padding:16px;margin-top:12px}.post-head{display:flex;gap:10px;align-items:center}.name{font-weight:800}.muted{color:var(--muted);font-size:13px}.post-image{height:210px;margin:15px 0;border-radius:10px;background:linear-gradient(135deg,#18222b,#07090b 65%,#302400);display:grid;place-items:center;font-size:72px}.actions{display:flex;gap:22px;color:#b8c0c7}.actions button{background:none;border:0;color:inherit}.actions button:hover{color:var(--gold)}
+.right{padding:15px;height:max-content;position:sticky;top:12px}.community{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.thumb{width:48px;height:48px;border-radius:8px;background:#182029;display:grid;place-items:center}
+.creator{margin-top:12px;padding:20px}.creator-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{background:#090d11;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:7px}.field input,.field textarea{width:100%;background:#11171d;border:1px solid #29323a;color:#fff;border-radius:7px;padding:10px}.field textarea{min-height:90px}.choices{display:flex;gap:8px;flex-wrap:wrap}.choice{background:#11171d;border:1px solid #303943;color:#ddd;padding:9px 12px;border-radius:8px}.choice.selected{border-color:var(--gold);color:var(--gold)}.preview{display:grid;place-items:center;background:radial-gradient(circle,#25313c,#080b0e);min-height:300px;border-radius:12px}.hero-char{font-size:110px}.footer{padding:20px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:1050px){.app{grid-template-columns:190px 1fr}.right{display:none}}@media(max-width:700px){.app{display:block}.side{position:static;height:auto;margin-bottom:8px}.profile-mini{display:none}.hero h1{font-size:35px}.creator-grid{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div class="app">
+<aside class="side"><div class="logo">🦇 <b>BM7</b></div><div class="nav">
+<button class="active">🏠 الرئيسية</button><button>🔎 استكشف</button><button>👥 المجتمعات</button><button>💬 الرسائل</button><button>🔔 الإشعارات</button><button onclick="openCreator()">✨ إنشاء شخصية</button><button>👤 ملفي الشخصي</button><button>⚙️ الإعدادات</button>
+</div><div class="profile-mini"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">🦸</div><div><b>عضو جديد</b><div class="muted">المستوى 1</div></div></div></div></aside>
+<main>
+<div class="top"><input class="search" placeholder="ابحث في BM7..."><button class="btn gold" onclick="openCreator()">+ إنشاء شخصية</button></div>
+<section class="hero"><div><div class="muted">مرحباً بك في</div><h1>BM7</h1><p>شبكة اجتماعية لعشاق عالم الأبطال. أنشئ شخصيتك، شارك منشوراتك، وانضم إلى مجتمعاتك.</p><button class="btn gold" onclick="openCreator()">ابدأ بصناعة شخصيتك</button></div></section>
+<div class="tabs"><button class="sel">الكل</button><button>المتابَعون</button><button>المجتمعات</button></div>
+<article class="card"><div class="post-head"><div class="avatar">🃏</div><div><div class="name">Shadow</div><div class="muted">منذ ساعتين</div></div></div><p>أول منشور لي في BM7! بدأت أصمم شخصيتي الجديدة. 🔥</p><div class="post-image">🦇</div><div class="actions"><button onclick="like(this)">♡ 128</button><button>💬 24</button><button>↗ مشاركة</button></div></article>
+<section class="creator" id="creator"><h2>✨ إنشاء شخصيتك</h2><p class="muted">خصص بطلك ثم احفظ البطاقة في ملفك الشخصي.</p><div class="creator-grid"><div>
+<div class="field"><label>اسم الشخصية</label><input id="charName" value="Shadow" oninput="preview()"></div>
+<div class="field"><label>النوع</label><div class="choices"><button class="choice selected" onclick="pick(this)">بطل</button><button class="choice" onclick="pick(this)">شرير</button><button class="choice" onclick="pick(this)">محايد</button></div></div>
+<div class="field"><label>اللون</label><div class="choices"><button class="choice selected" onclick="pick(this)">ذهبي</button><button class="choice" onclick="pick(this)">أحمر</button><button class="choice" onclick="pick(this)">أزرق</button><button class="choice" onclick="pick(this)">بنفسجي</button></div></div>
+<div class="field"><label>القصة</label><textarea placeholder="اكتب قصة شخصيتك..."></textarea></div><button class="btn gold" onclick="saveChar()">💾 حفظ الشخصية</button>
+</div><div class="preview"><div style="text-align:center"><div class="hero-char">🦸</div><h2 id="previewName">Shadow</h2><div class="muted">بطل • المستوى 1</div></div></div></div></section>
+<div class="footer">BM7 © 2026 — نسخة تجريبية</div>
+</main>
+<aside class="right"><h3>المجتمعات الشائعة</h3><div class="community"><div class="thumb">🌃</div><div><b>Gotham</b><div class="muted">12,540 عضو</div></div></div><div class="community"><div class="thumb">🦸</div><div><b>الأبطال</b><div class="muted">8,230 عضو</div></div></div><div class="community"><div class="thumb">🃏</div><div><b>الأشرار</b><div class="muted">6,760 عضو</div></div></div><h3>مهام اليوم</h3><div class="card" style="margin:0">☐ انشر منشورًا <b style="float:left;color:var(--gold)">+10</b><hr style="border-color:var(--line)">☐ علّق على منشور <b style="float:left;color:var(--gold)">+5</b><hr style="border-color:var(--line)">☑ تسجيل الدخول <b style="float:left;color:var(--gold)">+20</b></div></aside>
+</div>
+<script>
+function openCreator(){document.getElementById('creator').scrollIntoView({behavior:'smooth'})}
+function pick(el){el.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected')}
+function preview(){document.getElementById('previewName').textContent=document.getElementById('charName').value||'شخصيتي'}
+function saveChar(){alert('تم حفظ الشخصية في النسخة التجريبية!')}
+function like(btn){let n=parseInt(btn.textContent.replace(/\D/g,''))||0;btn.textContent='♥ '+(n+1)}
+</script></body></html>
