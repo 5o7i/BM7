@@ -45,245 +45,249 @@ function pick(el){el.parentElement.querySelectorAll('.choice').forEach(x=>x.clas
 function preview(){document.getElementById('previewName').textContent=document.getElementById('charName').value||'شخصيتي'}
 function saveChar(){alert('تم حفظ الشخصية في النسخة التجريبية!')}
 function like(btn){let n=parseInt(btn.textContent.replace(/\D/g,''))||0;btn.textContent='♥ '+(n+1)}
-// ===== BM7 AUTH - Supabase =====
+<!-- BM7 LOGIN / SIGNUP -->
+const bm7SupabaseUrl = "https://rutbrdmnntffjsvbktm.supabase.co";
+const bm7SupabaseKey = "sb_publishable_63uTdxSKL2g5_yE5Q-pfFA_AUDMNc22";
 
-const SUPABASE_URL = "https://rutbrdmnntffjfsvbktm.supabase.co";
-const SUPABASE_KEY = "sb_publishable_63uTdxSKL2g5_yE5Q-pfFA_AUDMNc22";
+const bm7Load = document.createElement("script");
+bm7Load.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 
-const authStyle = document.createElement("style");
-authStyle.textContent = `
-#bm7AuthBox{
-  position:fixed;
-  top:18px;
-  left:18px;
-  z-index:9999;
-  background:#0b0f13;
-  border:1px solid #ffc400;
-  border-radius:12px;
-  padding:12px;
-  box-shadow:0 10px 30px #0008;
-  direction:rtl;
-  font-family:Arial,Tahoma,sans-serif;
-}
-#bm7AuthBox button{
-  border:0;
-  border-radius:8px;
-  padding:9px 14px;
-  margin:3px;
-  cursor:pointer;
-  font-weight:bold;
-}
-.bm7Gold{background:#ffc400;color:#111}
-.bm7Dark{background:#202830;color:#fff}
-#bm7AuthModal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#000b;
-  z-index:10000;
-  align-items:center;
-  justify-content:center;
-  direction:rtl;
-}
-#bm7AuthCard{
-  width:min(420px,90%);
-  background:#0b0f13;
-  border:1px solid #ffc400;
-  border-radius:16px;
-  padding:25px;
-  color:#fff;
-}
-#bm7AuthCard h2{
-  color:#ffc400;
-  margin-top:0;
-}
-#bm7AuthCard input{
-  width:100%;
-  box-sizing:border-box;
-  margin:7px 0;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #282f38;
-  background:#171e26;
-  color:#fff;
-}
-#bm7AuthMsg{
-  margin-top:10px;
-  color:#bbb;
-  font-size:14px;
-}
-`;
-document.head.appendChild(authStyle);
+bm7Load.onload = async () => {
+  const bm7Supabase = window.supabase.createClient(
+    bm7SupabaseUrl,
+    bm7SupabaseKey
+  );
 
-const supabaseScript = document.createElement("script");
-supabaseScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-
-supabaseScript.onload = () => {
-
-  const { createClient } = window.supabase;
-  const bm7Supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  window.bm7Supabase = bm7Supabase;
 
   const box = document.createElement("div");
   box.id = "bm7AuthBox";
+
   box.innerHTML = `
-    <button class="bm7Gold" onclick="bm7OpenAuth()">تسجيل الدخول</button>
-  `;
-  document.body.appendChild(box);
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.75);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+      font-family:Arial,Tahoma,sans-serif;
+    " id="bm7AuthBg">
 
-  const modal = document.createElement("div");
-  modal.id = "bm7AuthModal";
+      <div style="
+        width:360px;
+        max-width:90%;
+        background:#0b0f13;
+        border:1px solid #ffc400;
+        border-radius:15px;
+        padding:22px;
+        color:#fff;
+        direction:rtl;
+        box-shadow:0 0 30px #000;
+      ">
 
-  modal.innerHTML = `
-    <div id="bm7AuthCard">
-      <h2>🦇 BM7</h2>
+        <h2 style="color:#ffc400;margin-top:0">🦇 تسجيل الدخول إلى BM7</h2>
 
-      <input id="bm7Email" type="email" placeholder="البريد الإلكتروني">
+        <input id="bm7Email"
+          type="email"
+          placeholder="البريد الإلكتروني"
+          style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0;background:#111820;color:#fff;border:1px solid #303943;border-radius:8px">
 
-      <input id="bm7Password" type="password" placeholder="كلمة المرور">
+        <input id="bm7Password"
+          type="password"
+          placeholder="كلمة المرور"
+          style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0;background:#111820;color:#fff;border:1px solid #303943;border-radius:8px">
 
-      <button class="bm7Gold" onclick="bm7Login()">تسجيل الدخول</button>
+        <input id="bm7Username"
+          type="text"
+          placeholder="اسم المستخدم"
+          style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0;background:#111820;color:#fff;border:1px solid #303943;border-radius:8px">
 
-      <button class="bm7Dark" onclick="bm7Signup()">إنشاء حساب</button>
+        <div style="font-size:12px;color:#9ba4ad;margin:5px 0 10px">
+          اسم المستخدم يجب أن يكون 4 أحرف أو أكثر.
+          اليوزر <b style="color:#ffc400">1</b> محجوز للإدارة فقط.
+        </div>
 
-      <button class="bm7Dark" onclick="bm7Reset()">نسيت كلمة المرور؟</button>
+        <button onclick="bm7Login()" style="width:100%;padding:11px;margin:4px 0;background:#ffc400;color:#111;border:0;border-radius:8px;font-weight:bold">
+          تسجيل الدخول
+        </button>
 
-      <button class="bm7Dark" onclick="bm7CloseAuth()">إغلاق</button>
+        <button onclick="bm7Signup()" style="width:100%;padding:11px;margin:4px 0;background:#202830;color:#fff;border:1px solid #444;border-radius:8px">
+          إنشاء حساب
+        </button>
 
-      <div id="bm7AuthMsg"></div>
+        <button onclick="bm7CloseAuth()" style="width:100%;padding:9px;margin-top:8px;background:transparent;color:#aaa;border:0">
+          إغلاق
+        </button>
+
+        <div id="bm7AuthMsg" style="margin-top:10px;text-align:center"></div>
+      </div>
     </div>
   `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(box);
 
   window.bm7OpenAuth = () => {
-    document.getElementById("bm7AuthModal").style.display = "flex";
+    document.getElementById("bm7AuthBg").style.display = "flex";
   };
 
   window.bm7CloseAuth = () => {
-    document.getElementById("bm7AuthModal").style.display = "none";
+    document.getElementById("bm7AuthBg").style.display = "none";
   };
 
   window.bm7Login = async () => {
-
     const email = document.getElementById("bm7Email").value.trim();
     const password = document.getElementById("bm7Password").value;
 
+    const msg = document.getElementById("bm7AuthMsg");
+
     if (!email || !password) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "اكتب البريد الإلكتروني وكلمة المرور.";
+      msg.style.color = "#ff5555";
+      msg.textContent = "اكتب البريد وكلمة المرور.";
       return;
     }
 
-    document.getElementById("bm7AuthMsg").textContent =
-      "جاري تسجيل الدخول...";
-
-    const { error } =
-      await bm7Supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+    const { error } = await bm7Supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
     if (error) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "خطأ: " + error.message;
+      msg.style.color = "#ff5555";
+      msg.textContent = "خطأ: " + error.message;
       return;
     }
 
-    document.getElementById("bm7AuthMsg").textContent =
-      "تم تسجيل الدخول بنجاح ✅";
+    msg.style.color = "#55dd77";
+    msg.textContent = "تم تسجيل الدخول ✅";
 
-    setTimeout(bm7CloseAuth, 800);
+    setTimeout(() => {
+      bm7CloseAuth();
+      bm7UpdateUser();
+    }, 700);
   };
 
   window.bm7Signup = async () => {
-
     const email = document.getElementById("bm7Email").value.trim();
     const password = document.getElementById("bm7Password").value;
+    const username = document.getElementById("bm7Username").value.trim();
 
-    if (!email || !password) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "اكتب البريد الإلكتروني وكلمة المرور.";
+    const msg = document.getElementById("bm7AuthMsg");
+
+    if (!email || !password || !username) {
+      msg.style.color = "#ff5555";
+      msg.textContent = "عبّ جميع الخانات.";
+      return;
+    }
+
+    if (username === "1") {
+      msg.style.color = "#ff5555";
+      msg.textContent = "اليوزر 1 محجوز للإدارة.";
+      return;
+    }
+
+    if (username.length < 4) {
+      msg.style.color = "#ff5555";
+      msg.textContent = "اسم المستخدم يجب أن يكون 4 أحرف أو أكثر.";
       return;
     }
 
     if (password.length < 6) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
+      msg.style.color = "#ff5555";
+      msg.textContent = "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
       return;
     }
 
-    document.getElementById("bm7AuthMsg").textContent =
-      "جاري إنشاء الحساب...";
-
-    const { error } =
-      await bm7Supabase.auth.signUp({
-        email,
-        password
-      });
+    const { data, error } = await bm7Supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username: username
+        }
+      }
+    });
 
     if (error) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "خطأ: " + error.message;
+      msg.style.color = "#ff5555";
+      msg.textContent = "خطأ: " + error.message;
       return;
     }
 
-    document.getElementById("bm7AuthMsg").textContent =
-      "تم إنشاء الحساب ✅ تحقق من بريدك الإلكتروني إذا طُلب منك ذلك.";
+    if (data.user) {
+      const { error: profileError } = await bm7Supabase
+        .from("profiles")
+        .insert({
+          id: data.user.id,
+          username: username
+        });
+
+      if (profileError) {
+        msg.style.color = "#ff5555";
+        msg.textContent = "تعذر حفظ اسم المستخدم: " + profileError.message;
+        return;
+      }
+    }
+
+    msg.style.color = "#55dd77";
+    msg.textContent =
+      "تم إنشاء الحساب ✅ إذا طلب منك تأكيد البريد، افتح بريدك الإلكتروني.";
   };
-
-  window.bm7Reset = async () => {
-
-    const email = document.getElementById("bm7Email").value.trim();
-
-    if (!email) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "اكتب بريدك الإلكتروني أولاً.";
-      return;
-    }
-
-    const { error } =
-      await bm7Supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + window.location.pathname
-      });
-
-    if (error) {
-      document.getElementById("bm7AuthMsg").textContent =
-        "خطأ: " + error.message;
-      return;
-    }
-
-    document.getElementById("bm7AuthMsg").textContent =
-      "تم إرسال رابط استعادة كلمة المرور إلى بريدك ✅";
-  };
-
-  bm7Supabase.auth.onAuthStateChange((event, session) => {
-
-    if (session && session.user) {
-
-      box.innerHTML = `
-        <span style="color:#ffc400;margin:5px">
-          👤 ${session.user.email}
-        </span>
-        <button class="bm7Dark" onclick="bm7Logout()">
-          تسجيل الخروج
-        </button>
-      `;
-
-    } else {
-
-      box.innerHTML = `
-        <button class="bm7Gold" onclick="bm7OpenAuth()">
-          تسجيل الدخول
-        </button>
-      `;
-    }
-  });
 
   window.bm7Logout = async () => {
     await bm7Supabase.auth.signOut();
+    location.reload();
   };
 
+  window.bm7UpdateUser = async () => {
+    const { data } = await bm7Supabase.auth.getSession();
+
+    if (!data.session) return;
+
+    const user = data.session.user;
+
+    const { data: profile } = await bm7Supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+
+    const name =
+      profile?.username ||
+      user.user_metadata?.username ||
+      user.email;
+
+    const mini = document.querySelector(".profile-mini");
+
+    if (mini) {
+      mini.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="avatar">👤</div>
+          <div>
+            <b>${name}</b>
+            <div class="muted">عضو BM7</div>
+          </div>
+        </div>
+        <button onclick="bm7Logout()" style="
+          margin-top:8px;
+          background:#202830;
+          color:#fff;
+          border:1px solid #444;
+          padding:7px 12px;
+          border-radius:7px;
+          cursor:pointer;
+        ">تسجيل الخروج</button>
+      `;
+    }
+  };
+
+  const sessionData = await bm7Supabase.auth.getSession();
+
+  if (sessionData.data.session) {
+    bm7UpdateUser();
+  }
 };
 
-document.head.appendChild(supabaseScript);
+document.head.appendChild(bm7Load);
 </script></body></html>
