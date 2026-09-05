@@ -1,0 +1,1 @@
+(()=>{for(const p of ['bm7-1.js','bm7-2.js','bm7-3.js']){const s=document.createElement('script');s.src=p;document.body.appendChild(s)}})();
