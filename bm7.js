@@ -1,1 +1,1 @@
-(()=>{for(const p of ['bm7-1.js','bm7-2.js','bm7-3.js']){const s=document.createElement('script');s.src=p;document.body.appendChild(s)}})();
+(()=>{for(const p of ['core1.js','core2.js','core3.js','core4.js','core5.js','core6.js','core7.js','core8.js','core9.js','bm7-1.js','bm7-2.js','bm7-3.js']){const s=document.createElement('script');s.src=p;document.body.appendChild(s)}})();
