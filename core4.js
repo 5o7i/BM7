@@ -1,0 +1,18 @@
+/* BM7 v6 functionality */
+const BM7_REELS = [
+  {u:'Batman', e:'🦇', t:'جولة ليلية في Gotham', v:'24K مشاهدة'},
+  {u:'Night Watch', e:'🌃', t:'أفضل لقطة من المدينة', v:'11K مشاهدة'},
+  {u:'Heroes', e:'🛡️', t:'تحدي الأبطال اليومي', v:'8.7K مشاهدة'},
+  {u:'Villains', e:'🃏', t:'مين يقدر يوقفهم؟', v:'19K مشاهدة'},
+  {u:'BM7 Studio', e:'🎬', t:'كواليس عالم BM7', v:'6.2K مشاهدة'}
+];
+function renderReels(){const box=document.getElementById('bm7Reels');if(!box)return;box.innerHTML=BM7_REELS.map((r,i)=>`<div class="reel-card" onclick="playReel(${i})"><div class="reel-emoji">${r.e}</div><div class="reel-info"><b>${r.t}</b><br><small>@${r.u} • ${r.v}</small></div></div>`).join('')}
+function playReel(i){const r=BM7_REELS[i];openBM7Modal('🎬 '+r.t,`<div class="media-tile" style="height:360px;font-size:86px">${r.e}</div><p class="muted">@${r.u} • ${r.v}</p><button class="btn primary" onclick="toast('❤️ تم الإعجاب بالريلز')">❤️ إعجاب</button>`)}
+function getPresence(){return localStorage.getItem('bm7_presence') !== 'offline'}
+function togglePresence(){const on=!getPresence();localStorage.setItem('bm7_presence',on?'online':'offline');updatePresenceUI();toast(on?'🟢 أصبحت نشطاً':'⚫ أصبحت غير نشط')}
+function updatePresenceUI(){const b=document.getElementById('togglePresenceBtn');if(b)b.textContent=getPresence()?'🟢 نشط':'⚫ غير نشط';document.querySelectorAll('[data-presence-user]').forEach(el=>{const online=el.dataset.online==='true';el.innerHTML=`<span class="presence-dot ${online?'online':''}"></span>${online?'نشط الآن':'غير نشط'}`})}
+function openChatV6(name='Batman',online=true){const key='bm7_chat_'+name;let msgs=JSON.parse(localStorage.getItem(key)||'[]');const body=`<div class="chat-head"><div class="chat-user"><div class="chat-avatar">🦇</div><div><b>${name}</b><div class="presence"><span class="presence-dot ${online?'online':''}"></span>${online?'نشط الآن':'غير نشط'}</div></div></div><div class="call-actions"><button class="btn" onclick="startCall('${name}','voice')">📞</button><button class="btn" onclick="startCall('${name}','video')">📹</button></div></div><div class="chat-messages" id="bm7ChatMessages">${msgs.map(m=>`<div class="chat-bubble ${m.me?'me':''}">${escapeHtmlV6(m.text)}</div>`).join('')}</div><div class="chat-compose"><input id="bm7ChatInput" placeholder="اكتب رسالة..." onkeydown="if(event.key==='Enter')sendChatV6('${name}')"><button class="btn primary" onclick="sendChatV6('${name}')">إرسال</button></div>`;openBM7Modal('💬 محادثة',body)}
+function escapeHtmlV6(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function sendChatV6(name){const inp=document.getElementById('bm7ChatInput');if(!inp||!inp.value.trim())return;const key='bm7_chat_'+name;const msgs=JSON.parse(localStorage.getItem(key)||'[]');msgs.push({text:inp.value.trim(),me:true});localStorage.setItem(key,JSON.stringify(msgs));inp.value='';openChatV6(name,true)}
+function startCall(name,type){const label=type==='video'?'📹 مكالمة فيديو':'📞 مكالمة صوتية';openBM7Modal(label,`<div class="card" style="text-align:center;padding:35px"><div style="font-size:70px">🦇</div><h3>${name}</h3><div class="presence"><span class="presence-dot online"></span> جاري الاتصال...</div><p class="muted">تم تجهيز طبقة الاتصال؛ بعد تفعيل جدول الإشارات سيتم تشغيل الصوت والفيديو بين المستخدمين.</p><button class="btn" onclick="closeBM7Modal()">إنهاء المكالمة</button></div>`)}
+document.addEventListener('DOMContentLoaded',()=>{renderReels();updatePresenceUI()});
