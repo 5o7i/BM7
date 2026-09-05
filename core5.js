@@ -1,0 +1,5 @@
+/* BM7 v7 */
+function toggleFollowV7(btn,name){const key='bm7_follow_v7_'+name;const following=localStorage.getItem(key)==='1';localStorage.setItem(key,following?'0':'1');btn.textContent=following?'＋ متابعة':'✓ متابَع';toast(following?'تم إلغاء المتابعة':'تمت متابعة @'+name)}
+function joinEventV7(name){localStorage.setItem('bm7_event_'+name,'1');toast('⚡ انضممت إلى '+name+'! +50 XP');try{addXP(50)}catch(e){}}
+function renderTrendingV7(){const box=document.getElementById('bm7Trending');if(!box)return;const rows=[['1','🦇','#GothamNight','12.4K منشور'],['2','⚡','#BM7Challenge','8.9K منشور'],['3','🃏','#VillainsRise','6.7K منشور'],['4','🛡️','#HeroOfTheDay','5.3K منشور'],['5','🎬','#BM7Reels','4.8K منشور']];box.innerHTML=rows.map(r=>`<div class="trend-card"><div class="trend-row"><div class="trend-rank">${r[0]}</div><div class="avatar-ring">${r[1]}</div><div><b>${r[2]}</b><div class="muted">${r[3]} • رائج الآن</div></div></div></div>`).join('')}
+document.addEventListener('DOMContentLoaded',renderTrendingV7);
