@@ -1,6 +1,9 @@
 /* ===== BM7 AUTH - Supabase ===== */
 const SUPABASE_URL = "https://aqotdmnqncgrlgupyre.supabase.co";
 const SUPABASE_KEY = "sb_publishable_t4IaSUMBPVwCkEtrtAxoYA_d9UHF8-7";
+/* Legacy BM7 project: kept only as a login fallback for accounts created before BM7-2. */
+const LEGACY_SUPABASE_URL = "https://rutbrdmnntffjsvbktm.supabase.co";
+const LEGACY_SUPABASE_KEY = "sb_publishable_63uTdxSKL2g5_yE5Q-pfFA_AUDMNc22";
 
 const authStyle = document.createElement('style');
 authStyle.textContent = `
@@ -20,6 +23,8 @@ supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 supabaseScript.onload = () => {
   const { createClient } = window.supabase;
   window.bm7Supabase = createClient(SUPABASE_URL, SUPABASE_KEY); const bm7Supabase = window.bm7Supabase;
+  let legacySupabase = null;
+  try { legacySupabase = createClient(LEGACY_SUPABASE_URL, LEGACY_SUPABASE_KEY); } catch(e) { console.warn('Legacy auth unavailable',e); }
 
   const box = document.createElement('div');
   box.id = 'bm7AuthBox';
@@ -45,15 +50,57 @@ supabaseScript.onload = () => {
   window.bm7CloseAuth = () => document.getElementById('bm7AuthModal').style.display='none';
   window.bm7Msg = (text) => document.getElementById('bm7AuthMsg').textContent=text;
 
+  const renderAuth = (session) => {
+    if(session?.user){
+      box.innerHTML=`<span style="color:#ffc400;margin:5px">👤 ${session.user.email}</span><button class="bm7Dark" onclick="bm7Logout()">تسجيل الخروج</button>`;
+    }else{
+      box.innerHTML='<button class="bm7Gold" onclick="bm7OpenAuth()">تسجيل الدخول</button>';
+    }
+  };
+
+  const afterLogin = (client, session) => {
+    window.bm7Supabase = client;
+    renderAuth(session);
+    try {
+      const u=session?.user?.user_metadata?.username;
+      if(u) localStorage.setItem('bm7_username',u);
+    } catch(e){}
+    setTimeout(()=>{
+      try { if(typeof loadMyProfile==='function') loadMyProfile(); } catch(e){}
+      try { if(typeof loadRealPosts==='function') loadRealPosts(); } catch(e){}
+      try { if(typeof loadBM7Contacts==='function') loadBM7Contacts(); } catch(e){}
+      try { if(typeof loadRealNotifications==='function') loadRealNotifications(); } catch(e){}
+    },300);
+  };
+
   window.bm7Login = async () => {
-    const email=document.getElementById('bm7Email').value.trim();
+    const email=document.getElementById('bm7Email').value.trim().toLowerCase();
     const password=document.getElementById('bm7Password').value;
     if(!email||!password){bm7Msg('اكتب البريد الإلكتروني وكلمة المرور.');return;}
     bm7Msg('جاري تسجيل الدخول...');
-    const {error}=await bm7Supabase.auth.signInWithPassword({email,password});
-    if(error){bm7Msg('خطأ: '+error.message);return;}
-    bm7Msg('تم تسجيل الدخول بنجاح ✅');
-    setTimeout(bm7CloseAuth,700);
+
+    const primary = await bm7Supabase.auth.signInWithPassword({email,password});
+    if(!primary.error){
+      afterLogin(bm7Supabase, primary.data.session);
+      bm7Msg('تم تسجيل الدخول بنجاح ✅');
+      setTimeout(bm7CloseAuth,700);
+      return;
+    }
+
+    /* If the account was created in the original BM7 project, authenticate there too. */
+    if(legacySupabase){
+      bm7Msg('الحساب غير موجود في النسخة الجديدة — جاري تجربة حساب BM7 القديم...');
+      const legacy = await legacySupabase.auth.signInWithPassword({email,password});
+      if(!legacy.error){
+        afterLogin(legacySupabase, legacy.data.session);
+        bm7Msg('تم تسجيل الدخول بحسابك القديم بنجاح ✅');
+        setTimeout(bm7CloseAuth,700);
+        return;
+      }
+    }
+
+    bm7Msg('تعذر تسجيل الدخول. تأكد من البريد وكلمة المرور، وإذا كان حسابك قديماً جرّب إنشاء الحساب من جديد في BM7.');
+    console.error('BM7 login failed',primary.error);
   };
 
   window.bm7Signup = async () => {
@@ -126,14 +173,10 @@ supabaseScript.onload = () => {
     bm7Msg('تم إرسال رابط استعادة كلمة المرور إلى بريدك ✅');
   };
 
-  window.bm7Logout = async () => { await bm7Supabase.auth.signOut(); };
-
-  const renderAuth = (session) => {
-    if(session?.user){
-      box.innerHTML=`<span style="color:#ffc400;margin:5px">👤 ${session.user.email}</span><button class="bm7Dark" onclick="bm7Logout()">تسجيل الخروج</button>`;
-    }else{
-      box.innerHTML='<button class="bm7Gold" onclick="bm7OpenAuth()">تسجيل الدخول</button>';
-    }
+  window.bm7Logout = async () => {
+    try { await window.bm7Supabase.auth.signOut(); } catch(e) { console.error(e); }
+    window.bm7Supabase=bm7Supabase;
+    renderAuth(null);
   };
 
   bm7Supabase.auth.getSession().then(({data})=>renderAuth(data.session));
@@ -162,5 +205,18 @@ supabaseScript.onload = () => {
       showToast('مرحباً بك في BM7 🦇');
     }
   });
+
+  if(legacySupabase){
+    legacySupabase.auth.onAuthStateChange((_event,session)=>{
+      if(session?.user && window.bm7Supabase===legacySupabase){
+        renderAuth(session);
+        setTimeout(()=>{
+          try { if(typeof loadMyProfile==='function') loadMyProfile(); } catch(e){}
+          try { if(typeof loadRealPosts==='function') loadRealPosts(); } catch(e){}
+          try { if(typeof loadBM7Contacts==='function') loadBM7Contacts(); } catch(e){}
+        },300);
+      }
+    });
+  }
 };
 document.head.appendChild(supabaseScript);
