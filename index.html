@@ -14,31 +14,9 @@
 <button id="bm7LoginFallback" onclick="if(window.bm7OpenAuth){window.bm7OpenAuth()}else{window.__bm7AuthRequested=true;this.textContent='⏳ جاري تحميل تسجيل الدخول...'}">🔐 تسجيل الدخول</button>
 <div id="bm7mount"></div>
 <script>
-/* BM7 emergency interaction bootstrap: navigation works even if an optional module is delayed. */
-window.showSection=window.showSection||function(name,btn){
- document.querySelectorAll('.section-view').forEach(s=>s.classList.remove('active'));
- const target=document.getElementById('section-'+name); if(target) target.classList.add('active');
- document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
- if(btn) btn.classList.add('active');
- window.scrollTo({top:0,behavior:'smooth'});
-};
-window.showToast=window.showToast||function(t){let e=document.getElementById('bm7EmergencyToast');if(!e){e=document.createElement('div');e.id='bm7EmergencyToast';e.style='position:fixed;bottom:25px;left:50%;transform:translateX(-50%);z-index:999999;background:#111;color:#fff;border:1px solid #ffc400;border-radius:10px;padding:12px 18px';document.body.appendChild(e)}e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)};
-(async()=>{
- const m=document.getElementById('bm7mount');
- try{
-  for(const p of ['part1.html','part2.html']){
-   const r=await fetch(p+'?v=12');
-   if(!r.ok) throw new Error('تعذر تحميل '+p);
-   m.insertAdjacentHTML('beforeend',await r.text());
-  }
-  const files=['core1.js','core2.js','core3.js','core4.js','core5.js','core6.js','core7.js','core8.js','core9.js','bm7-1.js','bm7-2.js','bm7-3.js','boot.js'];
-  files.forEach((p,i)=>{const s=document.createElement('script');s.src=p+'?v=13';s.async=false;s.onload=()=>console.log('BM7 loaded',p);s.onerror=()=>console.error('BM7 failed',p);document.body.appendChild(s)});
-  setTimeout(()=>{
-   const b=document.getElementById('bm7LoginFallback');
-   if(window.bm7OpenAuth){b.classList.add('hidden');if(window.__bm7AuthRequested)window.bm7OpenAuth()}
-  },2500);
- }catch(e){console.error(e);window.showToast('تعذر تحميل جزء من BM7: '+e.message)}
-})();
+window.showSection=window.showSection||function(name,btn){document.querySelectorAll('.section-view').forEach(s=>s.classList.remove('active'));const target=document.getElementById('section-'+name);if(target)target.classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})};
+window.showToast=window.showToast||function(t){console.log(t)};
+(async()=>{const m=document.getElementById('bm7mount');try{for(const p of ['part1.html','part2.html']){const r=await fetch(p+'?v=14');if(!r.ok)throw new Error('تعذر تحميل '+p);m.insertAdjacentHTML('beforeend',await r.text())}const files=['core1.js','core2.js','core3.js','core4.js','core5.js','core6.js','core7.js','core8.js','core9.js','bm7-1.js','bm7-2.js','bm7-3.js','boot.js','authfix.js'];files.forEach(p=>{const s=document.createElement('script');s.src=p+'?v=14';s.async=false;s.onload=()=>console.log('BM7 loaded',p);s.onerror=()=>console.error('BM7 failed',p);document.body.appendChild(s)});setTimeout(()=>{const b=document.getElementById('bm7LoginFallback');if(window.bm7OpenAuth){b.classList.add('hidden');if(window.__bm7AuthRequested)window.bm7OpenAuth()}},3000)}catch(e){console.error(e);window.showToast('تعذر تحميل BM7: '+e.message)}})();
 </script>
 </body>
 </html>
